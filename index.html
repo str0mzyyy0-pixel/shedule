@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Биотехнология 26,1</title>
+    <style>
+        :root {
+            --primary: #818cf8;
+            --primary-light: #312e81;
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --badge-chisl: #0ea5e9;
+            --badge-znam: #f97316;
+            --badge-both: #10b981;
+            --border-color: #334155;
+            --dropdown-hover: #334155;
+            --splash-color: #ffff55;
+            --splash-shadow: #3f3f00;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .header-wrapper {
+            position: relative;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            color: var(--primary);
+            margin-bottom: 5px;
+            font-size: 2.2rem;
+            display: inline-block;
+        }
+
+        /* Майнкрафт сплэш */
+        .minecraft-splash {
+            display: inline-block;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: var(--splash-color);
+            text-shadow: 2px 2px 0px var(--splash-shadow);
+            transform: rotate(-10deg);
+            animation: pulse 0.8s infinite alternate ease-in-out;
+            margin-left: 10px;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: rotate(-10deg) scale(1);
+            }
+            100% {
+                transform: rotate(-10deg) scale(1.18);
+            }
+        }
+
+        .maps-dropdown-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .map-dropdown-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            background-color: var(--card-bg);
+            color: #34d399;
+            border: 2px solid var(--border-color);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: all 0.2s ease;
+        }
+
+        .map-dropdown-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+            border-color: #34d399;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            margin-top: 6px;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            border: 1px solid var(--border-color);
+            min-width: 280px;
+            z-index: 100;
+            overflow: hidden;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+            animation: fadeIn 0.15s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dropdown-item {
+            display: flex;
+            flex-direction: column;
+            padding: 10px 16px;
+            text-decoration: none;
+            color: var(--text-main);
+            border-bottom: 1px solid var(--border-color);
+            transition: background 0.15s ease;
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--dropdown-hover);
+        }
+
+        .dropdown-item-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--primary);
+        }
+
+        .dropdown-item-address {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .btn {
+            padding: 8px 18px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background-color: var(--card-bg);
+            color: var(--text-main);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .btn.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 4px 6px -1px rgba(129, 140, 248, 0.3);
+        }
+
+        .schedule-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .day-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+        }
+
+        .day-header {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .lesson {
+            position: relative;
+            padding: 12px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            background-color: var(--bg-color);
+            border-left: 4px solid var(--text-muted);
+            transition: transform 0.15s ease;
+        }
+
+        .lesson:last-child {
+            margin-bottom: 0;
+        }
+
+        .lesson:hover {
+            transform: translateX(2px);
+        }
+
+        .lesson.chislitel {
+            border-left-color: var(--badge-chisl);
+        }
+
+        .lesson.znamenatel {
+            border-left-color: var(--badge-znam);
+        }
+
+        .lesson.both {
+            border-left-color: var(--badge-both);
+        }
+
+        .lesson-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 6px;
+        }
+
+        .lesson-time {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+
+        .badge {
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge.chislitel { background-color: var(--badge-chisl); }
+        .badge.znamenatel { background-color: var(--badge-znam); }
+        .badge.both { background-color: var(--badge-both); }
+
+        .lesson-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 4px;
+            color: var(--text-main);
+        }
+
+        .lesson-details {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .lesson-location {
+            font-weight: 500;
+            color: var(--primary);
+        }
+
+        .empty-lesson {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="header-wrapper">
+        <h1>Биотехнология 26,1</h1>
+        <div class="minecraft-splash">Охаёшечки даттебаёшечки!</div>
+    </div>
+
+    <div class="maps-dropdown-container">
+        <button class="map-dropdown-btn" id="mapDropdownBtn" onclick="toggleDropdown(event)">
+            📍 Карта корпусов ▾
+        </button>
+        <div class="dropdown-menu" id="mapDropdown">
+            <a href="https://yandex.ru/maps/-/CDx9U01A" target="_blank" class="dropdown-item">
+                <span class="dropdown-item-title">Главный корпус</span>
+                <span class="dropdown-item-address">Аудитории с приставкой "Гл"</span>
+            </a>
+            <a href="https://yandex.ru/maps/-/CDx9U89B" target="_blank" class="dropdown-item">
+                <span class="dropdown-item-title">Корпус №1</span>
+                <span class="dropdown-item-address">Аудитории с приставкой "1к"</span>
+            </a>
+            <a href="https://yandex.ru/maps/-/CDx9U12C" target="_blank" class="dropdown-item">
+                <span class="dropdown-item-title">Спортивный комплекс</span>
+                <span class="dropdown-item-address">Занятия по физкультуре</span>
+            </a>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button class="btn active" onclick="filterWeek('all', event)">Все недели</button>
+        <button class="btn" onclick="filterWeek('chislitel', event)">Числитель</button>
+        <button class="btn" onclick="filterWeek('znamenatel', event)">Знаменатель</button>
+    </div>
+
+    <div class="schedule-grid">
+        <!-- Понедельник -->
+        <div class="day-card">
+            <div class="day-header">Понедельник</div>
+            
+            <div class="lesson both">
+                <div class="lesson-header">
+                    <span class="lesson-time">10:55 - 12:40</span>
+                    <span class="badge both">Всегда</span>
+                </div>
+                <div class="lesson-title">Математика</div>
+                <div class="lesson-details">
+                    <span class="lesson-location">Гл - 311</span>
+                </div>
+            </div>
+
+            <div class="lesson chislitel">
+                <div class="lesson-header">
+                    <span class="lesson-time">13:10 - 14:55</span>
+                    <span class="badge chislitel">Числитель</span>
+                </div>
+                <div class="lesson-title">Информатика</div>
+                <div class="lesson-details">
+                    <span class="lesson-location">1к - 261</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Вторник -->
+        <div class="day-card">
+            <div class="day-header">Вторник</div>
+
+            <div class="lesson chislitel">
+                <div class="lesson-header">
+                    <span class="lesson-time">13:10 - 14:55</span>
+                    <span class="badge chislitel">Числитель</span>
+                </div>
+                <div class="lesson-title">Физическая культура</div>
+                <div class="lesson-details">
+                    <span class="lesson-location">Спорткомплекс</span>
+                </div>
+            </div>
+
+            <div class="lesson znamenatel">
+                <div class="lesson-header">
+                    <span class="lesson-time">13:10 - 14:55</span>
+                    <span class="badge znamenatel">Знаменатель</span>
+                </div>
+                <div class="lesson-title">Английский язык</div>
+                <div class="lesson-details">
+                    <span class="lesson-location">1к - 604, 513, 423</span>
+                </div>
+            </div>
+
+            <div class="lesson chislitel">
+                <div class="lesson-header">
+                    <span class="lesson-time">15:05 - 16:50</span>
+                    <span class="badge chislitel">Числитель</span>
+                </div>
+                <div class="lesson-title">Математика</div>
+                <div class="lesson-details">
+                    <span class="lesson-location">1к - 305</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Среда -->
+        <div class="day-card">
+            <div class="day-header">Среда</div>
+
+            <div class="lesson chislitel">
+                <div class="lesson-header">
+                    <span class="lesson-time">13:10 - 14:55</span>
+                    <span class="badge chislitel">Числитель</span>
+                </div>
+                <div class="lesson-title">Казахский язык</div>
+                <div class="lesson-details">
+                    <span class="lesson-location">1к - 328, 332, 310</span>
+                </div>
+            </div>
+
+            <div class="lesson chislitel">
+                <div class="lesson-header">
+                    <span class="lesson-time">15:05 - 16:50</span>
+                    <span class="badge chislitel">Числитель</span>
+                </div>
+                <div class="lesson-title">Информатика</div>
+                <div class="lesson-details">
+                    <span class="lesson-location">Гл - 352</span>
+                </div>
+            </div>
+
+            <div class="lesson znamenatel">
+                <div class="lesson-header">
+                    <span class="lesson-time">Знаменатель</span>
+                    <span class="badge znamenatel">Знаменатель</span>
+                </div>
+                <div class="lesson-title">Нет занятий / Уточняется</div>
+            </div>
+        </div>
+
+        <!-- Четверг -->
+        <div class="day-card">
+            <div class="day-header">Четверг</div>
+
+            <div class="lesson chislitel">
+                <div class="lesson-header">
+                    <span class="lesson-time">13:10 - 14:55</span>
+                    <span class="badge chislitel">Числитель</span>
+                </div>
+                <div class="lesson-title">Английский язык</div>
+                <div class="lesson-details">
+                    <span class="lesson-location">1к - 513, 606, 423</span>
+                </div>
+            </div>
+
+            <div class="lesson znamenatel">
+                <div class="lesson-header">
+                    <span class="lesson-time">13:10 - 14:55</span>
+                    <span class="badge znamenatel">Знаменатель</span>
+                </div>
+                <div class="lesson-title">Английский язык</div>
+                <div class="lesson-details">
+                    <span class="lesson-location">1к - 513, 606, 423</span>
+                </div>
+            </div>
+
+            <div class="lesson chislitel">
+                <div class="lesson-header">
+                    <span class="lesson-time">15:05 - 16:50</span>
+                    <span class="badge chislitel">Числитель</span>
+                </div>
+                <div class="lesson-title">Казахский язык</div>
+                <div class="lesson-details">
+                    <span class="lesson-location">1к - 328, 332, 310</span>
+                </div>
+            </div>
+
+            <div class="lesson znamenatel">
+                <div class="lesson-header">
+                    <span class="lesson-time">15:05 - 16:50</span>
+                    <span class="badge znamenatel">Знаменатель</span>
+                </div>
+                <div class="lesson-title">История Казахстана</div>
+                <div class="lesson-details">
+                    <span class="lesson-location">1к - 209</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Пятница -->
+        <div class="day-card">
+            <div class="day-header">Пятница</div>
+
+            <div class="lesson both">
+                <div class="lesson-header">
+                    <span class="lesson-time">13:10 - 14:55</span>
+                    <span class="badge both">Всегда</span>
+                </div>
+                <div class="lesson-title">История Казахстана</div>
+                <div class="lesson-details">
+                    <span class="lesson-location">1к - 220</span>
+                </div>
+            </div>
+
+            <div class="lesson both">
+                <div class="lesson-header">
+                    <span class="lesson-time">15:05 - 16:50</span>
+                    <span class="badge both">Всегда</span>
+                </div>
+                <div class="lesson-title">Физическая культура</div>
+                <div class="lesson-details">
+                    <span class="lesson-location">Спорткомплекс</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleDropdown(e) {
+        if (e) e.stopPropagation();
+        document.getElementById("mapDropdown").classList.toggle("show");
+    }
+
+    window.onclick = function(event) {
+        if (!event.target.matches('#mapDropdownBtn')) {
+            var dropdowns = document.getElementsByClassName("dropdown-menu");
+            for (var i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains('show')) {
+                    openDropdown.classList.remove('show');
+                }
+            }
+        }
+    }
+
+    function filterWeek(type, evt) {
+        const buttons = document.querySelectorAll('.controls .btn');
+        buttons.forEach(btn => btn.classList.remove('active'));
+        if (evt && evt.currentTarget) {
+            evt.currentTarget.classList.add('active');
+        }
+
+        const lessons = document.querySelectorAll('.lesson');
+        lessons.forEach(lesson => {
+            if (type === 'all') {
+                lesson.style.display = 'block';
+            } else if (type === 'chislitel') {
+                if (lesson.classList.contains('chislitel') || lesson.classList.contains('both')) {
+                    lesson.style.display = 'block';
+                } else {
+                    lesson.style.display = 'none';
+                }
+            } else if (type === 'znamenatel') {
+                if (lesson.classList.contains('znamenatel') || lesson.classList.contains('both')) {
+                    lesson.style.display = 'block';
+                } else {
+                    lesson.style.display = 'none';
+                }
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
